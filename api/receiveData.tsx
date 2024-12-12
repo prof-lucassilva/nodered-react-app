@@ -2,10 +2,12 @@ import { VercelRequest, VercelResponse } from '@vercel/node';
 import mysql from 'mysql2/promise';
 
 const dbConfig = {
-  host: 'db4free.net:3306',
+  host: 'db4free.net',
+  port: 3306,
   user: 'lucas_silva',
   password: 'pi04d688',
   database: 'localhostlucas_s',
+  connectTimeout: 10000,
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
