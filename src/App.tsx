@@ -9,7 +9,13 @@ function App() {
   const handleReceiveData = async () => {
     setLoading(true); // Inicia o carregamento
     try {
-      const response = await fetch('/api/receiveData'); // Corrigido para /api/receiveData
+      const response = await fetch('/api/receiveData', {
+        method: 'POST', // Adiciona o método POST
+        headers: {
+          'Content-Type': 'application/json', // Define o tipo de conteúdo
+        },
+        body: JSON.stringify({ /* dados que você deseja enviar */ }), // Envie os dados que você deseja
+      });
       const result = await response.json();
       setData(result.message); // Atualiza o estado com a resposta da API
 
