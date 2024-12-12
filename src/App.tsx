@@ -7,28 +7,32 @@ function App() {
 
   // Função para buscar os dados da API
   const handleReceiveData = async () => {
-    setLoading(true); // Inicia o carregamento
+    setLoading(true);
     try {
+      const dataToSend = { campo1: 'valor1', campo2: 'valor2' }; // Exemplo de dados
+
       const response = await fetch('/api/receiveData', {
-        method: 'GET', // Altera o método para GET para recuperar informações
+        method: 'POST',
         headers: {
-          'Content-Type': 'application/json', // Define o tipo de conteúdo
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify(dataToSend), // Dados enviados ao backend
       });
+
       const result = await response.json();
-      console.log('Informações da API:', result); // Adicione esta linha para depuração
-      setData(result.message); // Atualiza o estado com a resposta da API
+      console.log('Resposta da API:', result);
+      setData(result.message);
 
-      // Armazenando as informações no localStorage
+      // Armazena os dados recebidos no localStorage
       localStorage.setItem('sensorData', JSON.stringify(result));
-
     } catch (error) {
-      setError('Erro ao buscar informações'); // Exibe a mensagem de erro
-      console.error('Erro ao buscar informações:', error);
+      setError('Erro ao enviar informações');
+      console.error('Erro:', error);
     } finally {
-      setLoading(false); // Finaliza o carregamento
+      setLoading(false);
     }
   };
+
 
   // Verifica se há dados no localStorage quando o componente é montado
   useEffect(() => {
