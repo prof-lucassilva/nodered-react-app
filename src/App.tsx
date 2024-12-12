@@ -17,6 +17,7 @@ function App() {
         body: JSON.stringify({ /* dados que você deseja enviar */ }), // Envie os dados que você deseja
       });
       const result = await response.json();
+      console.log('Resultado da API:', result); // Adicione esta linha para depuração
       setData(result.message); // Atualiza o estado com a resposta da API
 
       // Armazenando os dados no localStorage
