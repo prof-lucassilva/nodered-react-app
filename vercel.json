@@ -2,7 +2,7 @@
     "rewrites": [
       {
         "source": "/api/(.*)",
-        "destination": "/api/receiveData.cjs"
+        "destination": "/api/$1"
       }
     ]
   }  
