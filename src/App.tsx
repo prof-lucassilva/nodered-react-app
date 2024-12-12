@@ -9,7 +9,7 @@ function App() {
   const handleReceiveData = async () => {
     setLoading(true); // Inicia o carregamento
     try {
-      const response = await fetch('/api/data');
+      const response = await fetch('/api/receiveData'); // Corrigido para /api/receiveData
       const result = await response.json();
       setData(result.message); // Atualiza o estado com a resposta da API
 
