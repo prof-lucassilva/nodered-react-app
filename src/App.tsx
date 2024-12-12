@@ -10,22 +10,21 @@ function App() {
     setLoading(true); // Inicia o carregamento
     try {
       const response = await fetch('/api/receiveData', {
-        method: 'POST', // Adiciona o método POST
+        method: 'GET', // Altera o método para GET para recuperar informações
         headers: {
           'Content-Type': 'application/json', // Define o tipo de conteúdo
         },
-        body: JSON.stringify({ /* dados que você deseja enviar */ }), // Envie os dados que você deseja
       });
       const result = await response.json();
-      console.log('Resultado da API:', result); // Adicione esta linha para depuração
+      console.log('Informações da API:', result); // Adicione esta linha para depuração
       setData(result.message); // Atualiza o estado com a resposta da API
 
-      // Armazenando os dados no localStorage
+      // Armazenando as informações no localStorage
       localStorage.setItem('sensorData', JSON.stringify(result));
 
     } catch (error) {
-      setError('Erro ao buscar dados'); // Exibe a mensagem de erro
-      console.error('Erro ao buscar dados:', error);
+      setError('Erro ao buscar informações'); // Exibe a mensagem de erro
+      console.error('Erro ao buscar informações:', error);
     } finally {
       setLoading(false); // Finaliza o carregamento
     }
