@@ -14,20 +14,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'GET') {
     try {
       const connection = await mysql.createConnection(dbConfig);
-      
+
       // Consulta para buscar todos os registros
       const [rows] = await connection.execute('SELECT * FROM dados');
-      
+
       await connection.end();
-      
+
       return res.status(200).json({ dados: rows });
-      
+
     } catch (error) {
       console.error('Erro ao buscar dados:', error);
       return res.status(500).json({ message: 'Erro ao buscar dados do banco' });
     }
   }
-  
+
   if (req.method === 'POST') {
     const data = req.body;
 
@@ -41,8 +41,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const connection = await mysql.createConnection(dbConfig);
 
       // Inserção no banco
-      const query = 'INSERT INTO dados (campo1, campo2) VALUES (?, ?)';
-      await connection.execute(query, [data.campo1, data.campo2]);
+      const query = 'INSERT INTO dados (atributo, valor) VALUES (?, ?)';
+      for (const [atributo, valor] of Object.entries(data)) {
+        await connection.execute(query, [atributo, valor]);
+      }
 
       // Responder ao cliente
       res.status(200).json({ message: 'Dados armazenados com sucesso!' });
