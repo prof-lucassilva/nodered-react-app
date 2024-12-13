@@ -1,0 +1,59 @@
+No front (função para deletar o dado)
+
+const handleDelete = async (id: number) => {
+    try {
+      const url = `/api/receiveData?id=${id}`;
+      console.log("URL de DELETE:", url);
+  
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      console.log("Resposta do servidor:", response);
+  
+      if (!response.ok) {
+        throw new Error('Erro ao deletar item');
+      }
+  
+      // Atualiza os dados localmente após o sucesso
+      setData((prevData) => prevData.filter((item) => item.id !== id));
+      console.log("Item deletado com sucesso!");
+    } catch (error) {
+      console.error('Erro ao deletar item:', error);
+      setError('Erro ao deletar item');
+    }
+  };
+
+#################################
+
+Na api (para deletar um dado)
+
+if (req.method === 'DELETE') {
+    const { id } = req.query;
+    if (!id) {
+      return res.status(400).json({ message: 'ID não fornecido' });
+    }
+  
+    try {
+      const connection = await mysql.createConnection(dbConfig);
+  
+      const [result] = await connection.execute<mysql.OkPacket>(
+        'DELETE FROM dados WHERE id = ?',
+        [id]
+      );
+  
+      await connection.end();
+  
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'Registro não encontrado' });
+      }
+  
+      return res.status(200).json({ message: 'Registro deletado com sucesso!' });
+    } catch (error) {
+      console.error('Erro ao deletar registro:', error);
+      return res.status(500).json({ message: 'Erro ao deletar registro' });
+    }
+  }
