@@ -55,7 +55,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       console.error('Erro ao armazenar dados:', error);
       res.status(500).json({ message: 'Erro interno no servidor' });
     }
-  } else {
+  } 
+  
+  // para deletar um dado
+  
+  else {
     res.status(405).json({ message: 'Método não permitido' });
   }
 }

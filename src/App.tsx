@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { Trash } from 'lucide-react';
+import './index.css';
 
 function App() {
-  const [data, setData] = useState<any[]>([]); // Alterado para array
+  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -12,13 +14,12 @@ function App() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-        }
+        },
       });
 
       const result = await response.json();
       setData(result.dados);
       setError(null);
-      
     } catch (error) {
       setError('Erro ao buscar dados do banco');
       console.error('Erro:', error);
@@ -27,32 +28,53 @@ function App() {
     }
   };
 
-  // Carrega os dados quando o componente é montado
+  // função para deletar o dado
+  
   useEffect(() => {
     fetchData();
   }, []);
 
   return (
-    <div>
-      <h1>Dados Armazenados</h1>
-      <button onClick={fetchData} disabled={loading}>
-        {loading ? 'Carregando...' : 'Atualizar Dados'}
-      </button>
+    <div className="lista-container">
+      <div className="lista-card">
+        <header className="lista-header">
+          <div className="titulo-grupo">
+            <h1 className="lista-titulo">Dados Recebidos</h1>
+          </div>
+          <div>
+            <button
+              onClick={fetchData}
+              disabled={loading}
+            >
+              {loading ? 'Carregando...' : 'Atualizar Dados'}
+            </button>
+          </div>
+        </header>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+        {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      {/* Lista os dados do banco */}
-      {data.length > 0 ? (
-        <ul>
-          {data.map((item, index) => (
-            <li key={index}>
-              {item.atributo}, {item.valor}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>Nenhum dado encontrado</p>
-      )}
+        {data.length > 0 ? (
+          <ul className="dados-grid">
+            {data.map((item, index) => (
+              <li key={index} className="dado-card">
+                <div className="dado-info">
+                  <p className="dado-atributo">{item.atributo}</p>
+                  <p className="dado-valor">{item.valor}</p>
+                </div>
+                <button
+                    className="dado-delete-btn"
+                    // onClick={() => handleDelete(item.id)}
+                    aria-label="Deletar"
+                  >
+                    <Trash size={20} />
+                  </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="sem-resultados">Nenhum dado encontrado</p>
+        )}
+      </div>
     </div>
   );
 }

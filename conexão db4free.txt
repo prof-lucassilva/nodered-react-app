@@ -1,4 +1,0 @@
-$dbHost = 'db4free.net:3306';
-$dbUsername = 'lucas_silva';
-$dbPassword = 'pi04d688';
-$dbName = 'localhostlucas_s';
