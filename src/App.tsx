@@ -46,7 +46,7 @@ function App() {
         <ul>
           {data.map((item, index) => (
             <li key={index}>
-              Campo 1: {item.campo1}, Campo 2: {item.campo2}
+              {item.campo1}, {item.campo2}
             </li>
           ))}
         </ul>
