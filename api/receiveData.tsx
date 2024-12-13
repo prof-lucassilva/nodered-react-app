@@ -11,6 +11,23 @@ const dbConfig = {
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method === 'GET') {
+    try {
+      const connection = await mysql.createConnection(dbConfig);
+      
+      // Consulta para buscar todos os registros
+      const [rows] = await connection.execute('SELECT * FROM dados');
+      
+      await connection.end();
+      
+      return res.status(200).json({ dados: rows });
+      
+    } catch (error) {
+      console.error('Erro ao buscar dados:', error);
+      return res.status(500).json({ message: 'Erro ao buscar dados do banco' });
+    }
+  }
+  
   if (req.method === 'POST') {
     const data = req.body;
 

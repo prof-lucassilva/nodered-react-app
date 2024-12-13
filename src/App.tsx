@@ -1,59 +1,58 @@
 import { useState, useEffect } from 'react';
 
 function App() {
-  const [data, setData] = useState<string>(''); // Estado para armazenar os dados do sensor
-  const [loading, setLoading] = useState<boolean>(false); // Estado de carregamento
-  const [error, setError] = useState<string | null>(null); // Estado de erro
+  const [data, setData] = useState<any[]>([]); // Alterado para array
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Função para buscar os dados da API
-  const handleReceiveData = async () => {
+  const fetchData = async () => {
     setLoading(true);
     try {
-      const dataToSend = { campo1: 'valor1', campo2: 'valor2' }; // Exemplo de dados
-
       const response = await fetch('/api/receiveData', {
-        method: 'POST',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataToSend), // Dados enviados ao backend
+        }
       });
 
       const result = await response.json();
-      console.log('Resposta da API:', result);
-      setData(result.message);
-
-      // Armazena os dados recebidos no localStorage
-      localStorage.setItem('sensorData', JSON.stringify(result));
+      setData(result.dados);
+      setError(null);
+      
     } catch (error) {
-      setError('Erro ao enviar informações');
+      setError('Erro ao buscar dados do banco');
       console.error('Erro:', error);
     } finally {
       setLoading(false);
     }
   };
 
-
-  // Verifica se há dados no localStorage quando o componente é montado
+  // Carrega os dados quando o componente é montado
   useEffect(() => {
-    const savedData = localStorage.getItem('sensorData');
-    if (savedData) {
-      setData(JSON.parse(savedData).message); // Carrega os dados do localStorage
-    }
+    fetchData();
   }, []);
 
   return (
     <div>
-      <h1>Recebendo Dados do Node-RED</h1>
-      <button onClick={handleReceiveData} disabled={loading}>
-        {loading ? 'Carregando...' : 'Receber Dados'}
+      <h1>Dados Armazenados</h1>
+      <button onClick={fetchData} disabled={loading}>
+        {loading ? 'Carregando...' : 'Atualizar Dados'}
       </button>
 
-      {/* Exibe mensagem de erro se houver */}
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      {/* Exibe os dados recebidos */}
-      {data && <p>{data}</p>}
+      {/* Lista os dados do banco */}
+      {data.length > 0 ? (
+        <ul>
+          {data.map((item, index) => (
+            <li key={index}>
+              Campo 1: {item.campo1}, Campo 2: {item.campo2}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>Nenhum dado encontrado</p>
+      )}
     </div>
   );
 }
