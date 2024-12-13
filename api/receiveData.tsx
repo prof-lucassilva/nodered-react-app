@@ -11,45 +11,28 @@ const dbConfig = {
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method === 'GET') {
-    try {
-      const connection = await mysql.createConnection(dbConfig);
-
-      // Consulta para buscar todos os registros
-      const [rows] = await connection.execute('SELECT * FROM dados');
-
-      await connection.end();
-
-      return res.status(200).json({ dados: rows });
-
-    } catch (error) {
-      console.error('Erro ao buscar dados:', error);
-      return res.status(500).json({ message: 'Erro ao buscar dados do banco' });
-    }
-  }
-
   if (req.method === 'POST') {
     const data = req.body;
 
     try {
-      // Validação básica
+      // Conexão ao banco de dados
+      const connection = await mysql.createConnection(dbConfig);
+
+      // Verifica se há dados no corpo da requisição
       if (!data || typeof data !== 'object') {
         return res.status(400).json({ message: 'Dados inválidos' });
       }
 
-      // Conexão ao banco de dados
-      const connection = await mysql.createConnection(dbConfig);
-
-      // Inserção no banco
-      const query = 'INSERT INTO dados (atributo, valor) VALUES (?, ?)';
+      // Percorre todas as chaves e valores do JSON recebido
       for (const [atributo, valor] of Object.entries(data)) {
+        const query = 'INSERT INTO dados (atributo, valor) VALUES (?, ?)';
         await connection.execute(query, [atributo, valor]);
       }
 
-      // Responder ao cliente
+      // Responde com sucesso
       res.status(200).json({ message: 'Dados armazenados com sucesso!' });
 
-      // Fechar conexão
+      // Fecha a conexão com o banco de dados
       await connection.end();
     } catch (error) {
       console.error('Erro ao armazenar dados:', error);
